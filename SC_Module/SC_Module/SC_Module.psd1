@@ -30,7 +30,7 @@ CompanyName = 'scottes.com'
 Copyright = '(c) 2019 Scott Crawford. All rights reserved.'
 
 # Description of the functionality provided by this module
-Description = 'Used to manage SC Modules'
+Description = 'Used to manage Scotte Modules'
 
 # Minimum version of the Windows PowerShell engine required by this module
 # PowerShellVersion = ''

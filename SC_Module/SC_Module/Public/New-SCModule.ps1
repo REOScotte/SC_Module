@@ -59,9 +59,9 @@ function New-SCModule {
             $updatedManifest = $manifestContent.Replace("'*'", "@()")
             Set-Content -Path $newManifestPath -Value $updatedManifest
 
-            $euModule = Get-SCModule -Path .\$Name
+            $scModule = Get-SCModule -Path .\$Name
 
-            Write-Output $euModule
+            Write-Output $scModule
         } catch {
             Write-Error $Error[0]
         }

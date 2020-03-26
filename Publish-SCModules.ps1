@@ -49,11 +49,11 @@ try {
     Write-Verbose "| Modules that changed |"
     Write-Verbose "+----------------------+"
     foreach ($module in $modules) {Write-Verbose $module.Split('\')[1]}
-    $euModules = $modules | Get-SCModule
+    $scModules = $modules | Get-SCModule
 
-    foreach ($euModule in $euModules) {
+    foreach ($scModule in $scModules) {
         # Sign all the scripts
-        $scripts = Get-ChildItem -Path $euModule.modulePath -File -Include '*.ps1', '*.psd1', '*.psm1', '*.ps1xml' -Recurse
+        $scripts = Get-ChildItem -Path $scModule.modulePath -File -Include '*.ps1', '*.psd1', '*.psm1', '*.ps1xml' -Recurse
 
         foreach ($script in $scripts) {
             Set-SCAuthenticodeSignature -Path $script.FullName -Certificate $signingCert
@@ -62,15 +62,15 @@ try {
         # Sync the entire module to the repository
         # Robocopy has exit codes where 0-7 are all successful
         Write-Verbose "Copying $SCModule"
-        $source = $euModule.ModulePath
-        $destination = "$Path\$($euModule.Name)"
+        $source = $scModule.ModulePath
+        $destination = "$Path\$($scModule.Name)"
         robocopy $source $destination /mir
         if ($LASTEXITCODE -lt 8) {$LASTEXITCODE = 0} else {throw "robocopy failed"}
 
-        $group = "Share_PowerShellModules_$($euModule.UserGroup)"
-        Write-Verbose "Reseting permissions for $($euModule.Name)"
+        $group = "Share_PowerShellModules_$($scModule.UserGroup)"
+        Write-Verbose "Reseting permissions for $($scModule.Name)"
         icacls $destination /T /reset
-        Write-Verbose "Granting permissions for $($euModule.Name) to $group"
+        Write-Verbose "Granting permissions for $($scModule.Name) to $group"
         icacls $destination /grant "$($group):(OI)(CI)(RX)"
         if ($LASTEXITCODE -ne 0) {throw "icacls failed."}
 
